@@ -39,6 +39,7 @@ build/
 
 ### Envs ###
 *.env
+!example.env
 service_account.json
 *.jar
 data
