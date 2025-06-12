@@ -18,9 +18,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class SelfReflectionBotApp {
-    private final static String TELEGRAM_BOT_API_TOKEN = System.getenv("telegram.bot.token");
-    private final static String TARGET_USER_ID = System.getenv("telegram.bot.target_user");
-    private static final String APP_MODE = System.getenv("app.mode");
+    private final static String TELEGRAM_BOT_API_TOKEN = System.getenv("telegram_bot_token");
+    private final static String TARGET_USER_ID = System.getenv("telegram_bot_target_user");
+    private static final String APP_MODE = System.getenv("app_mode");
 
     private static final String APP_MODES_DEBUG = "DEBUG";
     private static final String BOT_TIMEZONE = "CET";

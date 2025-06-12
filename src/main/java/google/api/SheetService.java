@@ -8,6 +8,7 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.AppendValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 
 import java.io.*;
@@ -20,18 +21,18 @@ public class SheetService {
     private static final String APPLICATION_NAME = "Self-Reflection Bot";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
-    private static final String GOOGLE_API_SERVICE_ACCOUNT = System.getenv("google.api.service_account");
-    private static final String TARGET_SPREADSHEET_ID = System.getenv("google.api.spreadsheet_id");
-    private static final String TARGET_SPREADSHEET_NAME = System.getenv("google.api.sheet_name");
+    private static final String GOOGLE_API_SERVICE_ACCOUNT = System.getenv("google_api_service_account");
+    private static final String TARGET_SPREADSHEET_ID = System.getenv("google_api_spreadsheet_id");
+    private static final String TARGET_SPREADSHEET_NAME = System.getenv("google_api_sheet_name");
 
     public static Sheets getSheetsService() throws NullPointerException, IOException, GeneralSecurityException {
         if (GOOGLE_API_SERVICE_ACCOUNT == null) {
             throw new NullPointerException("Google API service account not found");
         }
 
-        InputStream in = new ByteArrayInputStream(GOOGLE_API_SERVICE_ACCOUNT.getBytes(StandardCharsets.UTF_8));
+        InputStream in = new FileInputStream(GOOGLE_API_SERVICE_ACCOUNT);
 
-        ServiceAccountCredentials credentials = (ServiceAccountCredentials) ServiceAccountCredentials
+        GoogleCredentials credentials = ServiceAccountCredentials
                 .fromStream(in)
                 .createScoped(SCOPES);
 

@@ -40,6 +40,14 @@ public class SelfReflectionBot extends BasicBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        if (update.hasMessage() && update.getMessage().getFrom().getId() != targetUserId) {
+            return;
+        }
+
+        if (update.hasCallbackQuery() && update.getCallbackQuery().getFrom().getId() != targetUserId) {
+            return;
+        }
+
         dispatchPoll(update);
         dispatchFlow(update);
         dispatchCommand(update);
