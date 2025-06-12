@@ -60,7 +60,6 @@ public class SelfReflectionBotApp {
             return;
         }
 
-
         selfReflectionBot = new SelfReflectionBot(TELEGRAM_BOT_API_TOKEN, targetUserId);
 
         PollReflectionQueue pollReflectionQueue;
