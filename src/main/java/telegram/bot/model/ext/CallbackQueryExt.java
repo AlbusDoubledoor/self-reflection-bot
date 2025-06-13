@@ -4,7 +4,8 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 public class CallbackQueryExt extends CallbackQuery {
     private final static String EXTENSION_TAG = "&ext";
-    private static final String EXTENSION_PATTERN = "\\[" + EXTENSION_TAG + "]purpose=(.+)/id=(.+)/message=(.+$)";
+    private static final String EXTENSION_FORMAT = "[%s]p=%s/id=%s/msg=%s";
+    private static final String EXTENSION_PATTERN = "\\[" + EXTENSION_TAG + "]p=(.+)/id=(.+)/msg=(.+$)";
     private final CallbackQuery callbackQuery;
 
     public CallbackQueryExt(CallbackQuery callbackQuery) {
@@ -19,7 +20,7 @@ public class CallbackQueryExt extends CallbackQuery {
         return new CallbackQueryExt(callbackQuery);
     }
 
-    public boolean ofPurpose(String expectedCallbackPurpose) {
+    public boolean hasPurpose(String expectedCallbackPurpose) {
         String callbackData = callbackQuery.getData();
 
         String actualCallbackPurpose;
@@ -53,6 +54,6 @@ public class CallbackQueryExt extends CallbackQuery {
     }
 
     public static String buildCallbackData(String purpose, String id, String data) {
-        return String.format("[%s]purpose=%s/id=%s/message=%s", EXTENSION_TAG, purpose, id, data);
+        return String.format(EXTENSION_FORMAT, EXTENSION_TAG, purpose, id, data);
     }
 }

@@ -1,7 +1,7 @@
 package app.flow;
 
-import app.SelfReflectionBotApp;
 import app.model.reflection.ReflectionWriter;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import telegram.bot.SelfReflectionBot;
 import telegram.bot.model.ext.CallbackQueryExt;
 import telegram.bot.model.menu.ScaledRateMenu;
@@ -37,6 +37,7 @@ public class PollActivityFlow implements BotFlow {
             <b>Занятие</b>: %s\s
             <b>Удовольствие</b>: %s\s
             <b>Ценность</b>: %s""";
+    private final InlineKeyboardMarkup scaledRateKeyboard = new ScaledRateMenu().getKeyboard();
 
     public PollActivityFlow(SelfReflectionBot selfReflectionBot, Reflection reflection) {
         this.selfReflectionBot = selfReflectionBot;
@@ -98,7 +99,7 @@ public class PollActivityFlow implements BotFlow {
                 if (update.hasMessage() && update.getMessage().hasText()) {
                     String txt = update.getMessage().getText();
                     reflection.setActivity(txt);
-                    selfReflectionBot.sendMenu(buildMessage(MESSAGE__RATE_PLEASURE), ScaledRateMenu.getKeyboard());
+                    selfReflectionBot.sendMenu(buildMessage(MESSAGE__RATE_PLEASURE), scaledRateKeyboard);
                     move();
                 }
             }
@@ -110,20 +111,20 @@ public class PollActivityFlow implements BotFlow {
                 if (update.hasCallbackQuery()) {
                     CallbackQueryExt callbackQueryExt = CallbackQueryExt.extend(update.getCallbackQuery());
 
-                    if (!callbackQueryExt.ofPurpose(ScaledRateMenu.getPurpose())) {
+                    if (!callbackQueryExt.hasPurpose(ScaledRateMenu.getPurpose())) {
                         break;
                     }
 
                     // Handle menu callback - edit message and set rate
                     String rate = ScaledRateMenu.getRate(callbackQueryExt);
-                    selfReflectionBot.editMessageCallback(callbackQueryExt.getOriginal(), buildMessage(MESSAGE__SHOW_PLEASURE.replace(MESSAGE_UTILITY__RATE_TEMPLATE,rate)));
+                    selfReflectionBot.editMessageCallback(callbackQueryExt, buildMessage(MESSAGE__SHOW_PLEASURE.replace(MESSAGE_UTILITY__RATE_TEMPLATE,rate)));
                     move();
                     reflection.setPleasure(rate);
                     // Wrap up callback handler
-                    selfReflectionBot.answerCallback(callbackQueryExt.getOriginal());
+                    selfReflectionBot.answerCallback(callbackQueryExt);
 
                     // Next menu
-                    selfReflectionBot.sendMenu(MESSAGE__RATE_VALUE, ScaledRateMenu.getKeyboard());
+                    selfReflectionBot.sendMenu(MESSAGE__RATE_VALUE, scaledRateKeyboard);
                 }
             }
 
@@ -134,7 +135,7 @@ public class PollActivityFlow implements BotFlow {
                 if (update.hasCallbackQuery()) {
                     CallbackQueryExt callbackQueryExt = CallbackQueryExt.extend(update.getCallbackQuery());
 
-                    if (!callbackQueryExt.ofPurpose(ScaledRateMenu.getPurpose())) {
+                    if (!callbackQueryExt.hasPurpose(ScaledRateMenu.getPurpose())) {
                         break;
                     }
 
@@ -144,7 +145,7 @@ public class PollActivityFlow implements BotFlow {
                     move();
                     reflection.setValue(rate);
                     // Wrap up callback handler
-                    selfReflectionBot.answerCallback(callbackQueryExt.getOriginal());
+                    selfReflectionBot.answerCallback(callbackQueryExt);
 
                     // Next actions
                     reflection.save();

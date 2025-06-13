@@ -42,7 +42,6 @@ public class PollReflectionQueue implements Serializable{
         }
     }
 
-
     public synchronized int size() {
         return requests.size();
     }

@@ -1,6 +1,5 @@
 package telegram.bot.model.menu;
 
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import telegram.bot.model.ext.CallbackQueryExt;
@@ -8,16 +7,19 @@ import telegram.bot.model.ext.CallbackQueryExt;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScaledRateMenu {
-    private final static String MENU_PURPOSE = "scm";
+public class ScaledRateMenu extends TelegramMenu {
+    static {
+        menuPurpose = "scm";
+    }
 
     private static InlineKeyboardMarkup scaledRateKeyboard;
 
-    public static String getPurpose() {
-        return MENU_PURPOSE;
+    @Override
+    public InlineKeyboardMarkup getKeyboard() {
+        return getSingleKeyboard();
     }
 
-    public static InlineKeyboardMarkup getKeyboard() {
+    private static InlineKeyboardMarkup getSingleKeyboard() {
         if (scaledRateKeyboard == null) {
             InlineKeyboardMarkup.InlineKeyboardMarkupBuilder keyboardBuilder = InlineKeyboardMarkup.builder();
             InlineKeyboardButton.InlineKeyboardButtonBuilder buttonBuilder = InlineKeyboardButton.builder();
@@ -27,7 +29,7 @@ public class ScaledRateMenu {
                 for (int i = 1; i <= 5; ++i) {
                     String rateValue = String.valueOf(counter++);
                     var nextButton = buttonBuilder
-                            .text(rateValue).callbackData(CallbackQueryExt.buildCallbackData(MENU_PURPOSE, rateValue, rateValue));
+                            .text(rateValue).callbackData(CallbackQueryExt.buildCallbackData(menuPurpose, rateValue, rateValue));
 
                     keyboardButtonRow.add(nextButton.build());
                 }

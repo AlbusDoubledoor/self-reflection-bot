@@ -1,6 +1,5 @@
 package telegram.bot;
 
-import app.SelfReflectionBotApp;
 import app.flow.BotFlow;
 import app.flow.PollActivityFlow;
 import app.model.reflection.PollReflectionQueue;
@@ -71,7 +70,7 @@ public class SelfReflectionBot extends BasicBot {
         if (pollReflectionQueue == null) {
             throw new NullPointerException("[Bot: Add Poll] Poll Queue is not associated");
         }
-        sendMenu(ReflectionWriter.buildMessage(reflection, MESSAGE__OFFER_RATING), QuestionMenu.getKeyboard(reflection.getId()));
+        sendMenu(ReflectionWriter.buildMessage(reflection, MESSAGE__OFFER_RATING), new QuestionMenu(reflection.getId()).getKeyboard());
         pollReflectionQueue.add(reflection);
     }
 
@@ -83,7 +82,7 @@ public class SelfReflectionBot extends BasicBot {
         if (update.hasCallbackQuery()) {
             CallbackQueryExt callbackQueryExt = CallbackQueryExt.extend(update.getCallbackQuery());
 
-            if (!callbackQueryExt.ofPurpose(QuestionMenu.getPurpose())) {
+            if (!callbackQueryExt.hasPurpose(QuestionMenu.getPurpose())) {
                 return;
             }
 
@@ -113,10 +112,10 @@ public class SelfReflectionBot extends BasicBot {
                 newMessageText = MESSAGE__REQUEST_NOT_FOUND;
             }
 
-            editMessageCallback(callbackQueryExt.getOriginal(), newMessageText);
+            editMessageCallback(callbackQueryExt, newMessageText);
 
             // Wrap up callback handler
-            answerCallback(callbackQueryExt.getOriginal());
+            answerCallback(callbackQueryExt);
         }
     }
     public void dispatchCommand(Update update) {
