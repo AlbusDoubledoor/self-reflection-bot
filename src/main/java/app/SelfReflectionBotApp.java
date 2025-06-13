@@ -11,8 +11,8 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +44,7 @@ public class SelfReflectionBotApp {
     private static final TimeUnit BOT_POLL_PREPARE_NEW_UNIT = TimeUnit.HOURS;
 
     private final ScheduledExecutorService botExecutor = Executors.newSingleThreadScheduledExecutor();
-    private final Map<Integer, Boolean> pollTracker = new HashMap<>();
+    private final Set<Integer> hourlyRequestRegister = new HashSet<>();
     private SelfReflectionBot selfReflectionBot;
 
     public void start() throws TelegramApiException {
@@ -84,10 +84,10 @@ public class SelfReflectionBotApp {
         botExecutor.scheduleAtFixedRate(this::savePollQueue, BOT_POLL_SAVE_QUEUE_INITIAL_DELAY, BOT_POLL_SAVE_QUEUE_INTERVAL, BOT_POLL_SAVE_QUEUE_UNIT);
         botExecutor.scheduleAtFixedRate(this::prepareNewDay, BOT_POLL_PREPARE_NEW_INITIAL_DELAY, BOT_POLL_PREPARE_NEW_INTERVAL, BOT_POLL_PREPARE_NEW_UNIT);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(this::savePollQueue));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdown));
     }
 
-    public void pollActivityTask() {
+    private void pollActivityTask() {
         LocalDateTime now = LocalDateTime.now(getTimezoneId());
         int hour = now.getHour();
         int minute = now.getMinute();
@@ -96,8 +96,7 @@ public class SelfReflectionBotApp {
 
         if (hour >= ReflectionWriter.getLoggingStartHour() || hour == finalHour) {
             if (minute >= BOT_POLL_MINUTE_START && minute <= BOT_POLL_MINUTE_END) {
-                if (!pollTracker.getOrDefault(hour, false)) {
-
+                if (!hourlyRequestRegister.contains(hour)) {
                     selfReflectionBot.addPoll(new Reflection(now));
 
                     if (hour == finalHour) {
@@ -106,18 +105,18 @@ public class SelfReflectionBotApp {
                         selfReflectionBot.addPoll(finalDayReflection);
                     }
 
-                    pollTracker.put(hour, true);
+                    hourlyRequestRegister.add(hour);
                 }
             }
         }
     }
 
-    public void prepareNewDay() {
+    private void prepareNewDay() {
         LocalDateTime now = LocalDateTime.now(getTimezoneId());
         int hour = now.getHour();
 
         if (hour == BOT_POLL_CLEANUP_HOUR) {
-            pollTracker.clear();
+            hourlyRequestRegister.clear();
 
             appendNewDay();
 
@@ -130,7 +129,7 @@ public class SelfReflectionBotApp {
         }
     }
 
-    public void savePollQueue() {
+    private void savePollQueue() {
         try {
             PollReflectionQueue pollReflectionQueue = selfReflectionBot.getPollReflectionQueue();
             pollReflectionQueue.saveToFile(DATA_QUEUE_DAT);
@@ -138,6 +137,10 @@ public class SelfReflectionBotApp {
         } catch (IOException ioex) {
             System.out.println("[Self Reflection Bot App] Couldn't save queue file due to error: " + ioex.getMessage());
         }
+    }
+
+    private void onShutdown() {
+        savePollQueue();
     }
 
     public ZoneId getTimezoneId() {
