@@ -1,8 +1,14 @@
 # Self-Reflection Bot
-### About
+### Table of contents
+1. [Overview](#overview)
+2. [Highlights](#highlights)
+3. [Extension](#extension)
+4. [Gallery](#gallery)
+
+### Overview
 Pure Java implementation bot integrating Telegram API and Google Sheets API to record user's self-reflections during the day. Recorded data is then saved to the target spreadsheet.  
 [www.core.telegram.org/bots/api](https://core.telegram.org/bots/api)  
-[www.developers.google.com/workspace/sheets/api/reference/rest](https://developers.google.com/workspace/sheets/api/reference/rest)
+[www.developers.google.com/workspace/sheets/api/reference/rest](https://developers.google.com/workspace/sheets/api/reference/rest)  
 
 The flow is quite simple:
 - **Every hour** application sends a request to the user (using Telegram Bot) to record a "self-reflection"
