@@ -2,6 +2,7 @@ package app.model.reflection;
 
 import app.utility.DateTextFormatter;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -27,6 +28,11 @@ public class Reflection implements Serializable {
 
         this.dateTime = dateTime;
         this.targetTimePeriod = DateTextFormatter.getTimePeriod(hour);
+    }
+
+    public Reflection(LocalDateTime dateTime, @Nonnull String customTimePeriod) {
+        this(dateTime);
+        this.targetTimePeriod = customTimePeriod;
     }
 
     public void save() {
@@ -68,10 +74,6 @@ public class Reflection implements Serializable {
 
     public LocalDateTime getDateTime() {
         return dateTime;
-    }
-
-    public void setTargetTimePeriod(String targetTimePeriod) {
-        this.targetTimePeriod = targetTimePeriod;
     }
 
     public void setPleasure(String pleasure) {

@@ -54,15 +54,13 @@ public class SelfReflectionBot extends BasicBot {
     }
 
     public void simulateRandomPoll() {
-        Reflection reflection = new Reflection(LocalDateTime.now());
         int hour = RandomGenerator.getDefault().nextInt(10) + 9;
-        reflection.setTargetTimePeriod(DateTextFormatter.getTimePeriod(hour));
+        Reflection reflection = new Reflection(LocalDateTime.now(), DateTextFormatter.getTimePeriod(hour));
         addPoll(reflection);
     }
 
     public void simulateDayPoll() {
-        Reflection reflection = new Reflection(LocalDateTime.now());
-        reflection.setTargetTimePeriod(ReflectionWriter.getOverallTimePeriod());
+        Reflection reflection = new Reflection(LocalDateTime.now(), ReflectionWriter.getOverallTimePeriod());
         addPoll(reflection);
     }
 

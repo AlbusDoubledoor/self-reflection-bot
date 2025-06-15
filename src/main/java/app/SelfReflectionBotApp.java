@@ -100,9 +100,7 @@ public class SelfReflectionBotApp {
                     selfReflectionBot.addPoll(new Reflection(now));
 
                     if (hour == finalHour) {
-                        Reflection finalDayReflection = new Reflection(now);
-                        finalDayReflection.setTargetTimePeriod(ReflectionWriter.getOverallTimePeriod());
-                        selfReflectionBot.addPoll(finalDayReflection);
+                        selfReflectionBot.addPoll(new Reflection(now, ReflectionWriter.getOverallTimePeriod()));
                     }
 
                     hourlyRequestRegister.add(hour);
