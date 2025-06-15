@@ -7,15 +7,16 @@ import telegram.bot.model.ext.CallbackQueryExt;
 import java.util.List;
 
 public class QuestionMenu extends TelegramMenu {
-    static {
-        menuPurpose = "qm";
-    }
-
     private String menuId = "0";
+    private final static String menuPurpose = "qm";
     private final static String MENU_BUTTON_ANSWER_POSITIVE_TEXT = "Да \u2705";
     private final static String MENU_BUTTON_ANSWER_POSITIVE_CALLBACK = "yes";
     private final static String MENU_BUTTON_ANSWER_NEGATIVE_TEXT = "Позже... \u274C";
     private final static String MENU_BUTTON_ANSWER_NEGATIVE_CALLBACK = "no";
+
+    public static String getPurpose() {
+        return menuPurpose;
+    }
 
     @Override
     public InlineKeyboardMarkup getKeyboard() {

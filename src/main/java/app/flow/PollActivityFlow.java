@@ -117,11 +117,11 @@ public class PollActivityFlow implements BotFlow {
 
                     // Handle menu callback - edit message and set rate
                     String rate = ScaledRateMenu.getRate(callbackQueryExt);
-                    selfReflectionBot.editMessageCallback(callbackQueryExt, buildMessage(MESSAGE__SHOW_PLEASURE.replace(MESSAGE_UTILITY__RATE_TEMPLATE,rate)));
+                    selfReflectionBot.editMessageCallback(callbackQueryExt.getOriginal(), buildMessage(MESSAGE__SHOW_PLEASURE.replace(MESSAGE_UTILITY__RATE_TEMPLATE,rate)));
                     move();
                     reflection.setPleasure(rate);
                     // Wrap up callback handler
-                    selfReflectionBot.answerCallback(callbackQueryExt);
+                    selfReflectionBot.answerCallback(callbackQueryExt.getOriginal());
 
                     // Next menu
                     selfReflectionBot.sendMenu(MESSAGE__RATE_VALUE, scaledRateKeyboard);
@@ -145,7 +145,7 @@ public class PollActivityFlow implements BotFlow {
                     move();
                     reflection.setValue(rate);
                     // Wrap up callback handler
-                    selfReflectionBot.answerCallback(callbackQueryExt);
+                    selfReflectionBot.answerCallback(callbackQueryExt.getOriginal());
 
                     // Next actions
                     reflection.save();

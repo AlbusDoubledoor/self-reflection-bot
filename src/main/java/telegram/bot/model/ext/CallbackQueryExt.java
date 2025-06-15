@@ -1,5 +1,7 @@
 package telegram.bot.model.ext;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 public class CallbackQueryExt extends CallbackQuery {

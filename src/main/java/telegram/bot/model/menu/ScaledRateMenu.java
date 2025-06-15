@@ -8,11 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScaledRateMenu extends TelegramMenu {
-    static {
-        menuPurpose = "scm";
-    }
-
+    private final static String menuPurpose = "scm";
     private static InlineKeyboardMarkup scaledRateKeyboard;
+
+    public static String getPurpose() {
+        return menuPurpose;
+    }
 
     @Override
     public InlineKeyboardMarkup getKeyboard() {

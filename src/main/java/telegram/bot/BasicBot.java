@@ -1,5 +1,7 @@
 package telegram.bot;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.CopyMessage;
@@ -10,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public abstract class BasicBot extends TelegramLongPollingBot {
+    private static final Logger log = LogManager.getLogger(BasicBot.class);
     private final String botUserName;
 
     public BasicBot(String botToken, String botUserName) {
@@ -29,8 +32,8 @@ public abstract class BasicBot extends TelegramLongPollingBot {
                 .text(what).build();
         try {
             execute(sm);
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
+        } catch (TelegramApiException tapi) {
+            log.error("Couldn't send text to {} due to an exception: {}", who, tapi.getMessage());
         }
     }
 
@@ -42,8 +45,8 @@ public abstract class BasicBot extends TelegramLongPollingBot {
                 .build();
         try {
             execute(cm);
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
+        } catch (TelegramApiException tapi) {
+            log.error("Couldn't copy message of {} due to an exception: {}", who, tapi.getMessage());
         }
     }
 
@@ -55,8 +58,8 @@ public abstract class BasicBot extends TelegramLongPollingBot {
                 .build();
         try {
             execute(sm);
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
+        } catch (TelegramApiException tapi) {
+            log.error("Couldn't send menu to {} due to an exception: {}", who, tapi.getMessage());
         }
     }
 
@@ -79,7 +82,7 @@ public abstract class BasicBot extends TelegramLongPollingBot {
         try {
             execute(newTxt);
         } catch (TelegramApiException e) {
-            System.out.printf("Edit message exception [id=%s]. %s\n", messageId, e.getMessage());
+            log.error("Couldn't edit message [id={}] due to an exception: {}", messageId, e.getMessage());
         }
     }
 
@@ -93,7 +96,7 @@ public abstract class BasicBot extends TelegramLongPollingBot {
         try {
             execute(close);
         } catch (TelegramApiException e) {
-            System.out.printf("Answer callback query [id=%s] exception. %s\n", queryId, e.getMessage());
+            log.error("Couldn't answer callback query [id={}] due to an exception: {}", queryId, e.getMessage());
         }
     }
 }

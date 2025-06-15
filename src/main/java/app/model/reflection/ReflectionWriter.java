@@ -2,6 +2,8 @@ package app.model.reflection;
 
 import app.utility.DateTextFormatter;
 import google.api.SheetService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -13,6 +15,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class ReflectionWriter {
+    private static final Logger log = LogManager.getLogger(ReflectionWriter.class);
     private static final Executor executor = Executors.newSingleThreadExecutor();
 
     private enum WriteDestination {
@@ -79,7 +82,7 @@ public class ReflectionWriter {
 
             return newRowIdx;
         } catch (IOException ioex) {
-            System.out.println("[Reflection New Row] Couldn't append. " + ioex.getMessage());
+            log.error("Couldn't append new sheets row: {}", ioex.getMessage());
             return -1;
         }
     }
@@ -137,20 +140,20 @@ public class ReflectionWriter {
             }
 
             if (entryRowIndex < 0) {
-                throw new NullPointerException("[Save Reflection] Couldn't append new row");
+                throw new NullPointerException("Couldn't append new row");
             }
 
             int periodEntryColumnIdx = SheetService.getColumnIdxForRowEntry(entryRowIndex, reflection.getTargetTimePeriod());
 
             if (periodEntryColumnIdx < 0) {
-                throw new NullPointerException("[Save Reflection] Couldn't find necessary time period");
+                throw new NullPointerException("Couldn't find necessary time period");
             }
 
             SheetService.updateCellValue(entryRowIndex + 1, periodEntryColumnIdx, reflection.getActivity());
             SheetService.updateCellValue(entryRowIndex + 2, periodEntryColumnIdx, reflection.getPleasure());
             SheetService.updateCellValue(entryRowIndex + 3, periodEntryColumnIdx, reflection.getValue());
         } catch (NullPointerException | IOException ex) {
-            System.out.printf("[Save Reflection] Google API Sheets fail. %s\n", ex.getMessage());
+            log.error("Google API Sheets fail: {}", ex.getMessage());
             ReflectionWriter failureWriter =
                     new Builder(reflection)
                             .text()
@@ -166,7 +169,7 @@ public class ReflectionWriter {
             String fileName = hashCode() + ".txt";
             File reflectionFile = new File(filePath);
             if (reflectionFile.mkdirs()) {
-                System.out.println("[Write Reflection File] Directory " + reflectionFile.getPath() + " successfully created");
+                log.info("Directory {} successfully created", reflectionFile.getPath());
             }
 
             LocalDateTime reflectionTime = reflection.getDateTime();
@@ -180,7 +183,7 @@ public class ReflectionWriter {
             fileWriter.write("value=" + reflection.getValue() + "\n");
             fileWriter.close();
         } catch (IOException ioex) {
-            System.out.printf("[Write Reflection File] Couldn't save to the disk: %s\n", ioex.getMessage());
+            log.error("Couldn't save reflection to a text file {}: {}", filePath, ioex.getMessage());
         }
     }
 

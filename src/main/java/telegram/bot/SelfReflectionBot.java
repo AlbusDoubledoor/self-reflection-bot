@@ -1,11 +1,14 @@
 package telegram.bot;
 
+import app.SelfReflectionBotApp;
 import app.flow.BotFlow;
 import app.flow.PollActivityFlow;
 import app.model.reflection.PollReflectionQueue;
 import app.model.reflection.Reflection;
 import app.model.reflection.ReflectionWriter;
 import app.utility.DateTextFormatter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -17,11 +20,32 @@ import java.time.LocalDateTime;
 import java.util.random.RandomGenerator;
 
 public class SelfReflectionBot extends BasicBot {
-    private final static String BOT_USERNAME = "SelfReflectionBot";
+    private static final Logger log = LogManager.getLogger(SelfReflectionBot.class);
+    private static final String BOT_USERNAME = "SelfReflectionBot";
     private long targetUserId = 0L;
     private BotFlow currentFlow;
     private PollReflectionQueue pollReflectionQueue;
     private boolean debugMode = false;
+
+    private enum UpdateType {
+        MESSAGE("Message"),
+        CALLBACK_QUERY("Callback Query"),
+        UNKNOWN("Unknown");
+
+
+        private final String displayName;
+
+        UpdateType(String displayName) {
+            this.displayName = displayName;
+        }
+
+        @Override
+        public String toString() {
+            return displayName;
+        }
+    }
+
+    private static final String MSG_POLL_QUEUE_NULL = "[Bot: Add Poll] Poll Queue is not associated";
 
     private static final String MESSAGE__OFFER_RATING = "Время оценить своё поведение. Будем оценивать?";
     private static final String MESSAGE__REQUEST_NOT_FOUND = "[Удалено, так как запрос не найден. Период хранения запросов - 7 дней]";
@@ -39,6 +63,26 @@ public class SelfReflectionBot extends BasicBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        long userId = targetUserId;
+        UpdateType updateType = UpdateType.UNKNOWN;
+
+        if (update.hasMessage()) {
+            userId = update.getMessage().getFrom().getId();
+            updateType = UpdateType.MESSAGE;
+        } else if (update.hasCallbackQuery()) {
+            userId = update.getCallbackQuery().getFrom().getId();
+            updateType = UpdateType.CALLBACK_QUERY;
+        }
+
+        if (userId != targetUserId) {
+            log.warn("Received {} from unknown user id={}", updateType, userId);
+            return;
+        }
+
+        if (updateType.equals(UpdateType.UNKNOWN)) {
+            log.warn("Received unknown operation: {}", update);
+        }
+
         dispatchPoll(update);
         dispatchFlow(update);
         dispatchCommand(update);
@@ -48,26 +92,31 @@ public class SelfReflectionBot extends BasicBot {
         debugMode = enabled;
     }
 
-    public void simulatePoll() {
+    private void simulatePoll() {
         Reflection reflection = new Reflection(LocalDateTime.now());
         addPoll(reflection);
     }
 
-    public void simulateRandomPoll() {
+    private void simulateRandomPoll() {
         int hour = RandomGenerator.getDefault().nextInt(10) + 9;
         Reflection reflection = new Reflection(LocalDateTime.now(), DateTextFormatter.getTimePeriod(hour));
         addPoll(reflection);
     }
 
-    public void simulateDayPoll() {
+    private void simulateDayPoll() {
         Reflection reflection = new Reflection(LocalDateTime.now(), ReflectionWriter.getOverallTimePeriod());
         addPoll(reflection);
     }
 
-    public void addPoll(Reflection reflection) throws  NullPointerException {
+    private void printQueue() {
+        log.debug(pollReflectionQueue.toString());
+    }
+
+    public void addPoll(Reflection reflection) throws NullPointerException {
         if (pollReflectionQueue == null) {
-            throw new NullPointerException("[Bot: Add Poll] Poll Queue is not associated");
+            throw new NullPointerException(MSG_POLL_QUEUE_NULL);
         }
+        log.debug("New poll added to the queue; timeperiod={} / id={}", reflection.getTargetTimePeriod(), reflection.getId());
         sendMenu(ReflectionWriter.buildMessage(reflection, MESSAGE__OFFER_RATING), new QuestionMenu(reflection.getId()).getKeyboard());
         pollReflectionQueue.add(reflection);
     }
@@ -110,10 +159,10 @@ public class SelfReflectionBot extends BasicBot {
                 newMessageText = MESSAGE__REQUEST_NOT_FOUND;
             }
 
-            editMessageCallback(callbackQueryExt, newMessageText);
+            editMessageCallback(callbackQueryExt.getOriginal(), newMessageText);
 
             // Wrap up callback handler
-            answerCallback(callbackQueryExt);
+            answerCallback(callbackQueryExt.getOriginal());
         }
     }
     public void dispatchCommand(Update update) {
@@ -126,10 +175,11 @@ public class SelfReflectionBot extends BasicBot {
                     txt = msg.getText();
                     if (debugMode) {
                         try {
+                            log.debug("Executing command-method = {}", txt);
                             Method method = this.getClass().getDeclaredMethod(txt.replace("/", ""));
                             method.invoke(this);
                         } catch (Exception e) {
-                            System.out.printf("Command-method invoke exception %s\n", e.getMessage());
+                            log.warn("Command-method invoke exception = {}: {}", txt, e.getMessage());
                         }
                     }
                 }

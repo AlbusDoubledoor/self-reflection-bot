@@ -43,3 +43,4 @@ build/
 service_account.json
 *.jar
 data
+*.log

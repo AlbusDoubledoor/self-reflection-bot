@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="CONSOLE">
+            <PatternLayout pattern="[%d{dd-MM-yyyy HH:mm:ss.SSS}] [%t] %-5level %logger{36}: %msg%n"/>
+        </Console>
+        <File name="OUT" fileName="out.log">
+            <PatternLayout pattern="[%d{dd-MM-yyyy HH:mm:ss.SSS}] [%t] %-5level %logger: %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="DEBUG">
+            <AppenderRef ref="CONSOLE"/>
+            <AppenderRef ref="OUT"/>
+        </Root>
+    </Loggers>
+</Configuration>

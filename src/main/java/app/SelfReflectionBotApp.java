@@ -3,6 +3,8 @@ package app;
 import app.model.reflection.PollReflectionQueue;
 import app.model.reflection.Reflection;
 import app.model.reflection.ReflectionWriter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import telegram.bot.SelfReflectionBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -18,6 +20,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class SelfReflectionBotApp {
+    private static final Logger log = LogManager.getLogger(SelfReflectionBotApp.class);
     private final static String TELEGRAM_BOT_API_TOKEN = System.getenv("telegram_bot_token");
     private final static String TARGET_USER_ID = System.getenv("telegram_bot_target_user");
     private static final String APP_MODE = System.getenv("app_mode");
@@ -48,6 +51,8 @@ public class SelfReflectionBotApp {
     private SelfReflectionBot selfReflectionBot;
 
     public void start() throws TelegramApiException {
+        log.info("Starting Self-Reflection Bot application with user={} and mode={}", TARGET_USER_ID, APP_MODE);
+
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
 
         String sTargetUserId = TARGET_USER_ID;
@@ -56,7 +61,7 @@ public class SelfReflectionBotApp {
         try {
             targetUserId = Long.parseLong(sTargetUserId);
         } catch (NumberFormatException nfe) {
-            System.out.printf("Couldn't parse target user ID <%s>\n", sTargetUserId);
+            log.error("Couldn't parse target user ID <{}>", sTargetUserId);
             return;
         }
 
@@ -66,16 +71,18 @@ public class SelfReflectionBotApp {
 
         try {
             pollReflectionQueue = PollReflectionQueue.loadFromFile(DATA_QUEUE_DAT);
-            System.out.println("[Self Reflection Bot App] Loaded queue from file");
+            log.info("Poll queue successfully loaded from file {}", DATA_QUEUE_DAT);
         } catch (Exception e) {
             pollReflectionQueue = new PollReflectionQueue();
-            System.out.println("[Self Reflection Bot App] Starting with a fresh queue");
+            log.info("Starting with a fresh poll queue, file {} created", DATA_QUEUE_DAT);
         }
 
         selfReflectionBot.linkPollQueue(pollReflectionQueue);
 
         if (APP_MODE.equals(APP_MODES_DEBUG)) {
             selfReflectionBot.enableDebugMode(true);
+
+            log.debug("Debug mode activated");
         }
 
         botsApi.registerBot(selfReflectionBot);
@@ -97,6 +104,7 @@ public class SelfReflectionBotApp {
         if (hour >= ReflectionWriter.getLoggingStartHour() || hour == finalHour) {
             if (minute >= BOT_POLL_MINUTE_START && minute <= BOT_POLL_MINUTE_END) {
                 if (!hourlyRequestRegister.contains(hour)) {
+                    log.info("Sending new hourly request");
                     selfReflectionBot.addPoll(new Reflection(now));
 
                     if (hour == finalHour) {
@@ -117,12 +125,16 @@ public class SelfReflectionBotApp {
             hourlyRequestRegister.clear();
 
             appendNewDay();
+            log.info("New day appended");
 
             PollReflectionQueue pollReflectionQueue = selfReflectionBot.getPollReflectionQueue();
             try {
+                int initialSize = pollReflectionQueue.size();
                 pollReflectionQueue.cleanupOld();
+                int resultSize =  pollReflectionQueue.size();
+                log.info("Clean-up of request queue completed. Old size <{}>; new size <{}>", initialSize, resultSize);
             } catch (NullPointerException npe) {
-                System.out.println("[Self Reflection Bot App] Couldn't clean old polls because queue was <null>");
+                log.error("Couldn't clean old polls because queue was <null>");
             }
         }
     }
@@ -131,9 +143,9 @@ public class SelfReflectionBotApp {
         try {
             PollReflectionQueue pollReflectionQueue = selfReflectionBot.getPollReflectionQueue();
             pollReflectionQueue.saveToFile(DATA_QUEUE_DAT);
-            System.out.println("[Self Reflection Bot App] Queue successfully saved");
+            log.info("Request queue successfully saved. Size <{}>", pollReflectionQueue.size());
         } catch (IOException ioex) {
-            System.out.println("[Self Reflection Bot App] Couldn't save queue file due to error: " + ioex.getMessage());
+            log.error("Couldn't save queue file due to an error: {}", ioex.getMessage());
         }
     }
 
@@ -160,7 +172,7 @@ public class SelfReflectionBotApp {
         try {
             botApp.start();
         } catch (TelegramApiException tapiex) {
-            System.out.println("Unable to start bot app due to an exception: " + tapiex.getMessage());
+            log.error("Unable to start bot app due to an exception: {}", tapiex.getMessage());
         }
     }
 }
