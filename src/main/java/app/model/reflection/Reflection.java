@@ -3,12 +3,16 @@ package app.model.reflection;
 import app.utility.DateTextFormatter;
 
 import javax.annotation.Nonnull;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
 
 public class Reflection implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private String pleasure = "";
     private String value = "";
     private String activity = "";
@@ -18,7 +22,7 @@ public class Reflection implements Serializable {
     private final String id = UUID.randomUUID().toString().replace("-","");
 
     public Reflection(LocalDateTime dateTime) {
-        timestamp = dateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+        timestamp = dateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond() * 1000L;
 
         int hour = dateTime.getHour();
 

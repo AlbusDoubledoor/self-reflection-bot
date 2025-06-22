@@ -40,7 +40,7 @@ public class SelfReflectionBotApp {
     private static final long BOT_POLL_SAVE_QUEUE_INTERVAL = 1;
     private static final TimeUnit BOT_POLL_SAVE_QUEUE_UNIT = TimeUnit.HOURS;
 
-    private static final String DATA_QUEUE_DAT = "data/queue.dat";
+    private static final String DATA_QUEUE_DAT = "data/poll_queue.ser";
 
     private static final int BOT_POLL_PREPARE_NEW_INITIAL_DELAY = 1;
     private static final int BOT_POLL_PREPARE_NEW_INTERVAL = 1;

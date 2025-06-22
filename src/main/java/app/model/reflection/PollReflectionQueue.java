@@ -4,9 +4,13 @@ import javax.annotation.Nullable;
 import java.io.*;
 import java.util.*;
 
-public class PollReflectionQueue implements Serializable{
-    private final int MAX_SIZE = 10000;
-    private final long MAX_AGE_MILLIS = 7 * (24 * 60 * 60 * 1000L); // 7 days
+public class PollReflectionQueue implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private transient final int MAX_SIZE = 10000;
+    private transient final long MAX_AGE_MILLIS = 7 * (24 * 60 * 60 * 1000L); // 7 days
+
     private final LinkedList<Reflection> requests = new LinkedList<>();
 
     public synchronized void add(Reflection req) {
@@ -48,10 +52,13 @@ public class PollReflectionQueue implements Serializable{
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (Reflection reflection : requests) {
-            sb.append("id=");
-            sb.append(reflection.getId());
-            sb.append(' ');
-            sb.append(ReflectionWriter.print(reflection)).append('\n');
+            sb.append('\n')
+                    .append("id=")
+                    .append(reflection.getId())
+                    .append("; timestamp=")
+                    .append(reflection.getTimestamp())
+                    .append(' ')
+                    .append(ReflectionWriter.print(reflection));
         }
 
         return sb.toString();
