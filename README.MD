@@ -34,13 +34,13 @@ Although the application is quite simple, there are some features that might be 
 The purpose of this application is initially quite localized and intended for a small group of people, so a lot of things were meant to be kept simple: for example, the application is currently targeting one user per instance - which keeps package quite isolated and easy to deploy, but it is not scalable if there's need to expand to thousands of users. 
   
 How can this application be improved and/or extended?
-- Add robust logging using Log4j 2 or logback via SLF4J
-- Add JUnit tests
-- Add localization (English, at least) and load messages from configuration files, not specify directly in the code
-- Add Registration flow to let each user configure their preferences and Google spreadsheet
-- Add relational database to store each user's configuration and requests
-- Add Docker setup to simplify deployment and update experience
-- Finally, migrate to Spring Boot to support high-availability and scalable setup
+* ✅ Add robust logging using Log4j 2 or logback via SLF4J
+* Add JUnit tests
+* Add localization (English, at least) and load messages from configuration files, not specify directly in the code
+* Add Registration flow to let each user configure their preferences and Google spreadsheet
+* Add relational database to store each user's configuration and requests
+* Add Docker setup to simplify deployment and update experience
+* Finally, migrate to Spring Boot to support high-availability and scalable setup
 
 ### Gallery
 Prompt to record self-reflection (date / time period / weekday)
