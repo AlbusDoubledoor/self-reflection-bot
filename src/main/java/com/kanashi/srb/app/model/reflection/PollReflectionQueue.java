@@ -1,4 +1,4 @@
-package app.model.reflection;
+package com.kanashi.srb.app.model.reflection;
 
 import javax.annotation.Nullable;
 import java.io.*;

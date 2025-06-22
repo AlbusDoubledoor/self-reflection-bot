@@ -1,4 +1,4 @@
-package telegram.bot.model.menu;
+package com.kanashi.srb.telegram.bot.model.menu;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 

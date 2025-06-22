@@ -1,8 +1,8 @@
-package telegram.bot.model.menu;
+package com.kanashi.srb.telegram.bot.model.menu;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import telegram.bot.model.ext.CallbackQueryExt;
+import com.kanashi.srb.telegram.bot.model.ext.CallbackQueryExt;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package telegram.bot;
+package com.kanashi.srb.telegram.bot;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

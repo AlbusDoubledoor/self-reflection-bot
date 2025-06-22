@@ -1,12 +1,12 @@
-package app.flow;
+package com.kanashi.srb.app.flow;
 
-import app.model.reflection.ReflectionWriter;
+import com.kanashi.srb.app.model.reflection.ReflectionWriter;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import telegram.bot.SelfReflectionBot;
-import telegram.bot.model.ext.CallbackQueryExt;
-import telegram.bot.model.menu.ScaledRateMenu;
+import com.kanashi.srb.telegram.bot.SelfReflectionBot;
+import com.kanashi.srb.telegram.bot.model.ext.CallbackQueryExt;
+import com.kanashi.srb.telegram.bot.model.menu.ScaledRateMenu;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import app.model.reflection.Reflection;
+import com.kanashi.srb.app.model.reflection.Reflection;
 
 
 public class PollActivityFlow implements BotFlow {

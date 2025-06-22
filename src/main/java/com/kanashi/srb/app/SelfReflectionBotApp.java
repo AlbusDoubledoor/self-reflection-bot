@@ -1,11 +1,11 @@
-package app;
+package com.kanashi.srb.app;
 
-import app.model.reflection.PollReflectionQueue;
-import app.model.reflection.Reflection;
-import app.model.reflection.ReflectionWriter;
+import com.kanashi.srb.app.model.reflection.PollReflectionQueue;
+import com.kanashi.srb.app.model.reflection.Reflection;
+import com.kanashi.srb.app.model.reflection.ReflectionWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import telegram.bot.SelfReflectionBot;
+import com.kanashi.srb.telegram.bot.SelfReflectionBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;

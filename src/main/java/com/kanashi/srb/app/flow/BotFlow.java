@@ -1,4 +1,4 @@
-package app.flow;
+package com.kanashi.srb.app.flow;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 

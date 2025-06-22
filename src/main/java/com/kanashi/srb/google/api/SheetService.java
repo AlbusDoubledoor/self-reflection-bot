@@ -1,4 +1,4 @@
-package google.api;
+package com.kanashi.srb.google.api;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.JsonFactory;

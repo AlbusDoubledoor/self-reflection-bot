@@ -1,19 +1,18 @@
-package telegram.bot;
+package com.kanashi.srb.telegram.bot;
 
-import app.SelfReflectionBotApp;
-import app.flow.BotFlow;
-import app.flow.PollActivityFlow;
-import app.model.reflection.PollReflectionQueue;
-import app.model.reflection.Reflection;
-import app.model.reflection.ReflectionWriter;
-import app.utility.DateTextFormatter;
+import com.kanashi.srb.app.flow.BotFlow;
+import com.kanashi.srb.app.flow.PollActivityFlow;
+import com.kanashi.srb.app.model.reflection.PollReflectionQueue;
+import com.kanashi.srb.app.model.reflection.Reflection;
+import com.kanashi.srb.app.model.reflection.ReflectionWriter;
+import com.kanashi.srb.app.utility.DateTextFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import telegram.bot.model.ext.CallbackQueryExt;
-import telegram.bot.model.menu.QuestionMenu;
+import com.kanashi.srb.telegram.bot.model.ext.CallbackQueryExt;
+import com.kanashi.srb.telegram.bot.model.menu.QuestionMenu;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;

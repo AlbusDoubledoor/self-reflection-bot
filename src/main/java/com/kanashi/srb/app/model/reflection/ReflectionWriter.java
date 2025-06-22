@@ -1,7 +1,7 @@
-package app.model.reflection;
+package com.kanashi.srb.app.model.reflection;
 
-import app.utility.DateTextFormatter;
-import google.api.SheetService;
+import com.kanashi.srb.app.utility.DateTextFormatter;
+import com.kanashi.srb.google.api.SheetService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

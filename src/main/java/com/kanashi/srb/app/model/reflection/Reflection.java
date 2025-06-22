@@ -1,6 +1,6 @@
-package app.model.reflection;
+package com.kanashi.srb.app.model.reflection;
 
-import app.utility.DateTextFormatter;
+import com.kanashi.srb.app.utility.DateTextFormatter;
 
 import javax.annotation.Nonnull;
 import java.io.Serial;
